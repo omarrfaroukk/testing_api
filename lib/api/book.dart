@@ -1,4 +1,3 @@
-
 class Book {
   final String title;
   final List<String>? authors;
@@ -21,7 +20,7 @@ class Book {
         publishedDate:
             volumeInfo['publishedDate'] as String? ?? 'No description',
         imageLinks: 
-            volumeInfo['imageLinks']['small'] as String? ?? 'No image',
+            volumeInfo['imageLinks']['large'] as String? ?? 'No image',
         );
   }
 }
