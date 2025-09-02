@@ -15,11 +15,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context)=> BookCubit(ApiService())..fetchBook(),
-      child: const MaterialApp(
-        home: MainPage()
-      ),
+      create: (context) => BookCubit(ApiService())..fetchBook(),
+      child: const MaterialApp(home: MainPage()),
     );
-     
   }
 }
