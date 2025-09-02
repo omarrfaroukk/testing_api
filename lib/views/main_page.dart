@@ -1,51 +1,58 @@
-import 'package:fetching_api/api/api_service.dart';
-import 'package:fetching_api/api/Book.dart';
+
+import 'package:fetching_api/cubit/book_cubit.dart';
+import 'package:fetching_api/cubit/book_state.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final apiservice = ApiService(); // Create an instance of ApiService class
     return Scaffold(
         appBar: AppBar(title: const Text("Fetching data from API")),
-        body: FutureBuilder<Book>(
-          future: apiservice.fetchBook(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
+        body: BlocBuilder<BookCubit,BookState>(
+          builder:
+          (context,state){
+            if (state is BookLoading)
+            {
               return const Center(child: CircularProgressIndicator());
             }
-            if (snapshot.hasError) {
-              return Center(
-                  child: Text("Error has occured: ${snapshot.error}"));
+            if (state is BookError)
+            {
+              return Center(child: Text("error occured: ${state.error}"),);
             }
-            final book = snapshot.data ??
-                Book(title: 'No Data', authors: [], publishedDate: '', imageLinks: '');
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Container(
-                  width: 400,
-                  height: 700,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: const Color.fromARGB(255, 144, 18, 18)),
+            if (state is BookLoaded)
+            {
+              final book = state.b;
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Container(
+                    width: 300,
+                    height: 600,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: const Color.fromARGB(255, 144, 18, 18)),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(book.title),
+                        Text(book.authors?.join(', ') ?? 'No Authors'),
+                        if (book.imageLinks.startsWith('http'))
+                          Image.network(book.imageLinks, errorBuilder: (context, error, stackTrace) => const Text('Image failed to load')),
+                        if (!book.imageLinks.startsWith('http'))
+                          const Text('No valid image available'),
+                      ],
+                    )
+                  )
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(book.title),
-                      Text("by: ${book.authors?.join(', ') ?? 'No Authors'}"),
-                      Text(book.publishedDate),
-                      Padding(
-                        padding:const EdgeInsets.all(50),
-                        child: Image.network(book.imageLinks))
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        ));
+              );
+                
+            }
+            return const Center(child: Text('Initial State'));
+          }
+           )
+        );
   }
 }

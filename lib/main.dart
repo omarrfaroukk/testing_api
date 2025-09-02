@@ -1,5 +1,8 @@
+import 'package:fetching_api/api/api_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'cubit/book_cubit.dart';
 import 'views/main_page.dart';
 
 void main() {
@@ -11,8 +14,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MainPage()
+    return BlocProvider(
+      create: (context)=> BookCubit(ApiService())..fetchBook(),
+      child: const MaterialApp(
+        home: MainPage()
+      ),
     );
      
   }
