@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:fetching_api/api/Book.dart';
 import 'package:fetching_api/api/api_service.dart';
 
 import 'book_state.dart';
